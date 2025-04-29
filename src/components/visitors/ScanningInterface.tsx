@@ -10,12 +10,20 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import BarcodeScanner from '../scanning/BarcodeScanner';
 
-const ScanningInterface: React.FC<{ initialScanType?: string }> = ({ initialScanType = 'id' }) => {
+interface ScanningInterfaceProps {
+  initialScanType?: string;
+  initialDirection?: 'ingress' | 'egress';
+}
+
+const ScanningInterface: React.FC<ScanningInterfaceProps> = ({ 
+  initialScanType = 'id',
+  initialDirection = 'ingress'
+}) => {
   const [scanType, setScanType] = useState(initialScanType);
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<null | { success: boolean; message: string; details?: any }>(null);
   const [geoLocation, setGeoLocation] = useState<GeolocationCoordinates | null>(null);
-  const [direction, setDirection] = useState<'ingress' | 'egress'>('ingress');
+  const [direction, setDirection] = useState<'ingress' | 'egress'>(initialDirection);
   const [timestamp, setTimestamp] = useState<string>('');
   const { toast } = useToast();
   
@@ -268,7 +276,7 @@ const ScanningInterface: React.FC<{ initialScanType?: string }> = ({ initialScan
           
           <div className="mt-6 mb-4">
             <RadioGroup 
-              defaultValue="ingress"
+              defaultValue={direction}
               className="flex items-center space-x-6" 
               onValueChange={(val) => setDirection(val as 'ingress' | 'egress')}
             >
