@@ -1,11 +1,12 @@
 
 import React from 'react';
 import { User, ClipboardList, Search, Shield } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import StatCard from './StatCard';
 import VisitorsList from './VisitorsList';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 const SecurityDashboard: React.FC = () => {
   return (
@@ -63,22 +64,28 @@ const SecurityDashboard: React.FC = () => {
               <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button 
-                className="w-full bg-navy hover:bg-navy-light text-white justify-start"
-                as={Link}
+              <Link 
                 to="/security/scan"
+                className={cn(
+                  "flex w-full items-center justify-start",
+                  "bg-navy hover:bg-navy-light text-white", 
+                  "h-10 px-4 py-2 rounded-md text-sm font-medium"
+                )}
               >
                 <Search className="mr-2 h-4 w-4" />
                 Scan ID Document
-              </Button>
-              <Button 
-                className="w-full bg-navy hover:bg-navy-light text-white justify-start"
-                as={Link}
+              </Link>
+              <Link
                 to="/security/scan?type=vehicle"
+                className={cn(
+                  "flex w-full items-center justify-start",
+                  "bg-navy hover:bg-navy-light text-white", 
+                  "h-10 px-4 py-2 rounded-md text-sm font-medium"
+                )}
               >
                 <Search className="mr-2 h-4 w-4" />
                 Scan Vehicle License Disk
-              </Button>
+              </Link>
               <Button variant="outline" className="w-full justify-start">
                 <User className="mr-2 h-4 w-4" />
                 Manual Visitor Entry
