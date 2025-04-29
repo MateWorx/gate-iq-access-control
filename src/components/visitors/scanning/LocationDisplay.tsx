@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, MapPin } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface LocationDisplayProps {
@@ -38,7 +38,10 @@ const LocationDisplay: React.FC<LocationDisplayProps> = ({ geoLocation, timestam
   // Display location data
   return (
     <div className="mt-4 text-xs text-gray-500">
-      <p>Location: {geoLocation.latitude.toFixed(6)}, {geoLocation.longitude.toFixed(6)} (±{geoLocation.accuracy.toFixed(0)}m)</p>
+      <p className="flex items-center">
+        <MapPin className="h-3 w-3 mr-1" />
+        {geoLocation.latitude.toFixed(6)}, {geoLocation.longitude.toFixed(6)} (±{geoLocation.accuracy.toFixed(0)}m)
+      </p>
       <p>Timestamp: {new Date(timestamp).toLocaleString()}</p>
     </div>
   );

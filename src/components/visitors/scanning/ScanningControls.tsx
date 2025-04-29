@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BarcodeScanner from '@/components/scanning/BarcodeScanner';
 import { Button } from '@/components/ui/button';
 import { CardFooter } from '@/components/ui/card';
-import { Camera, Loader2 } from 'lucide-react';
+import { Camera, Loader2, Car } from 'lucide-react';
 
 interface ScanningControlsProps {
   scanType: string;
@@ -28,9 +28,10 @@ const ScanningControls: React.FC<ScanningControlsProps> = ({
   return (
     <>
       <Tabs defaultValue={scanType} className="w-full" onValueChange={onScanTypeChange}>
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="id">ID Document</TabsTrigger>
           <TabsTrigger value="vehicle">Vehicle License</TabsTrigger>
+          <TabsTrigger value="anpr">Number Plate</TabsTrigger>
         </TabsList>
         
         <TabsContent value="id" className="space-y-4">
@@ -56,6 +57,20 @@ const ScanningControls: React.FC<ScanningControlsProps> = ({
             />
           </div>
         </TabsContent>
+        
+        <TabsContent value="anpr" className="space-y-4">
+          <div className="text-center">
+            <p className="mb-4">Position the camera to capture the vehicle number plate</p>
+            <BarcodeScanner 
+              onScanSuccess={onScanSuccess}
+              onScanError={onScanError}
+              scannerActive={scanning}
+              setScannerActive={onStartScan}
+              captureMode="anpr"
+            />
+            <p className="mt-2 text-xs text-gray-500">For best results, ensure the number plate is clearly visible and well-lit</p>
+          </div>
+        </TabsContent>
       </Tabs>
       
       <CardFooter className="flex justify-center mt-4">
@@ -74,7 +89,7 @@ const ScanningControls: React.FC<ScanningControlsProps> = ({
           ) : (
             <>
               <Camera className="mr-2 h-4 w-4" />
-              Start Scan
+              {scanType === 'anpr' ? 'Capture Plate' : 'Start Scan'}
             </>
           )}
         </Button>

@@ -148,6 +148,83 @@ export const useScanningLogic = ({
           });
         }
         
+      } else if (scanType === 'anpr') {
+        // Handle ANPR scan
+        scannedId = scannedText || "AA 123 GP";
+        
+        // Check for matches in residents table with vehicle registration
+        const { data: residentMatch, error: residentError } = await supabase
+          .from('residents')
+          .select('id, full_name, status')
+          .eq('vehicle_disk->registration', scannedId)
+          .maybeSingle();
+          
+        if (residentError) {
+          console.error("Error checking resident:", residentError);
+        }
+        
+        // Check for matches in visitors table with vehicle registration
+        const { data: visitorMatch, error: visitorError } = await supabase
+          .from('visitors')
+          .select('id, full_name, status, resident_id')
+          .eq('vehicle_disk->registration', scannedId)
+          .maybeSingle();
+          
+        if (visitorError) {
+          console.error("Error checking visitor:", visitorError);
+        }
+        
+        // Create result with match status
+        scanResult = {
+          plate: scannedId,
+          confidence: rawResult?.confidence || 0.98,
+          region: rawResult?.region || "GP",
+          matchStatus: residentMatch ? "Matched as Resident" : visitorMatch ? "Matched as Visitor" : "Unregistered",
+          owner: residentMatch ? residentMatch.full_name : visitorMatch ? visitorMatch.full_name : undefined
+        };
+        
+        // Log the scan
+        const { error: logError } = await supabase
+          .from('scan_logs')
+          .insert({
+            security_officer_id: securityOfficerId,
+            scanned_id: scannedId,
+            scan_type: 'ANPR Scan',
+            scan_result: scanResult,
+            geo_location: geoLocation ? {
+              latitude: geoLocation.latitude, 
+              longitude: geoLocation.longitude,
+              accuracy: geoLocation.accuracy
+            } : null,
+            timestamp: timestamp,
+            direction: direction,
+            visitor_id: visitorMatch?.id || null
+          });
+          
+        if (logError) {
+          console.error("Error logging ANPR scan:", logError);
+        }
+        
+        // Set the result message based on the match status
+        let resultMessage = "";
+        if (residentMatch) {
+          resultMessage = `License plate matched to resident: ${residentMatch.full_name}`;
+        } else if (visitorMatch) {
+          resultMessage = `License plate matched to visitor: ${visitorMatch.full_name}`;
+        } else {
+          resultMessage = `License plate detected: ${scannedId} - No matches found`;
+        }
+        
+        setResult({
+          success: true,
+          message: resultMessage,
+          details: {
+            ...scanResult,
+            direction: direction,
+            timestamp: new Date(timestamp).toLocaleString()
+          }
+        });
+        
       } else {
         // Simulate scanning a vehicle license disk
         scannedId = scannedText || "ABC123GP";
@@ -229,6 +306,7 @@ export const useScanningLogic = ({
 
   const handleStartScan = () => {
     setScanning(true);
+    setResult(null);
   };
 
   return {

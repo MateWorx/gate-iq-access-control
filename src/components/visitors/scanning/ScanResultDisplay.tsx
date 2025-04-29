@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, AlertCircle, Car } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ScanResult {
@@ -52,7 +52,53 @@ const ScanResultDisplay: React.FC<ScanResultDisplayProps> = ({
           )}
         </div>
       );
+    } else if (scanType === 'anpr') {
+      // Handle ANPR results specially
+      return (
+        <div className="mt-4 bg-gray-50 p-4 rounded-md">
+          <h4 className="font-medium mb-2">Number Plate Details:</h4>
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div>Registration:</div>
+            <div className="font-medium text-lg">{result.details.plate}</div>
+            {result.details.confidence && (
+              <>
+                <div>Confidence:</div>
+                <div className="font-medium">{Math.round(result.details.confidence * 100)}%</div>
+              </>
+            )}
+            {result.details.region && (
+              <>
+                <div>Region:</div>
+                <div className="font-medium">{result.details.region}</div>
+              </>
+            )}
+            {result.details.vehicle && (
+              <>
+                <div>Vehicle:</div>
+                <div className="font-medium">{result.details.vehicle}</div>
+              </>
+            )}
+          </div>
+          
+          {result.details.matchStatus && (
+            <div className="mt-3 pt-3 border-t">
+              <div className="flex items-center">
+                <span className="mr-2">Match Status:</span>
+                <span className={`font-medium ${result.details.matchStatus === 'Matched' ? 'text-green-600' : 'text-amber-600'}`}>
+                  {result.details.matchStatus}
+                </span>
+                {result.details.owner && (
+                  <span className="ml-4 text-sm text-gray-600">
+                    Owner: {result.details.owner}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      );
     } else {
+      // Standard vehicle license disk
       return (
         <div className="mt-4 bg-gray-50 p-4 rounded-md">
           <h4 className="font-medium mb-2">Vehicle Details:</h4>
@@ -76,9 +122,10 @@ const ScanResultDisplay: React.FC<ScanResultDisplayProps> = ({
   };
 
   const handleCheckInOutClick = () => {
+    const itemType = scanType === 'id' ? 'Person' : scanType === 'anpr' ? 'Vehicle (ANPR)' : 'Vehicle';
     toast({
       title: direction === 'ingress' ? "Check-in" : "Check-out",
-      description: `${scanType === 'id' ? 'Person' : 'Vehicle'} ${direction === 'ingress' ? 'checked in' : 'checked out'}`
+      description: `${itemType} ${direction === 'ingress' ? 'checked in' : 'checked out'}`
     });
   };
 
@@ -99,21 +146,23 @@ const ScanResultDisplay: React.FC<ScanResultDisplayProps> = ({
       
       {result.success && (
         <div className="mt-4 flex justify-end space-x-2">
-          <Button 
-            variant="outline"
-            size="sm"
-            onClick={handleRegisterClick}
-          >
-            Register
-          </Button>
+          {scanType !== 'anpr' && (
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={handleRegisterClick}
+            >
+              Register
+            </Button>
+          )}
           <Button 
             size="sm"
             className={direction === 'ingress' ? "bg-green-600 hover:bg-green-700 text-white" : "bg-red-600 hover:bg-red-700 text-white"}
             onClick={handleCheckInOutClick}
           >
             {direction === 'ingress' 
-              ? `${scanType === 'id' ? 'Check-in Person' : 'Check-in Vehicle'}` 
-              : `${scanType === 'id' ? 'Check-out Person' : 'Check-out Vehicle'}`}
+              ? `${scanType === 'id' ? 'Check-in Person' : scanType === 'anpr' ? 'Allow Vehicle Entry' : 'Check-in Vehicle'}` 
+              : `${scanType === 'id' ? 'Check-out Person' : scanType === 'anpr' ? 'Allow Vehicle Exit' : 'Check-out Vehicle'}`}
           </Button>
         </div>
       )}

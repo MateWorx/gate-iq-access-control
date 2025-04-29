@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { User, ClipboardList, Search, Shield, LogIn, LogOut } from 'lucide-react';
+import { User, ClipboardList, Search, Shield, LogIn, LogOut, Car } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import StatCard from './StatCard';
 import VisitorsList from './VisitorsList';
@@ -64,6 +64,7 @@ const SecurityDashboard: React.FC = () => {
               <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="mb-2 font-medium text-sm text-gray-500">ID Scanning</div>
               <Link 
                 to="/security/scan?type=id&direction=ingress"
                 className={cn(
@@ -86,6 +87,8 @@ const SecurityDashboard: React.FC = () => {
                 <LogOut className="mr-2 h-4 w-4" />
                 Scan ID for Egress (Out)
               </Link>
+              
+              <div className="mt-6 mb-2 font-medium text-sm text-gray-500">Vehicle Scanning</div>
               <Link 
                 to="/security/scan?type=vehicle&direction=ingress"
                 className={cn(
@@ -95,7 +98,7 @@ const SecurityDashboard: React.FC = () => {
                 )}
               >
                 <LogIn className="mr-2 h-4 w-4" />
-                Scan Vehicle for Ingress
+                Scan Vehicle Disk for Ingress
               </Link>
               <Link
                 to="/security/scan?type=vehicle&direction=egress"
@@ -106,12 +109,39 @@ const SecurityDashboard: React.FC = () => {
                 )}
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                Scan Vehicle for Egress
+                Scan Vehicle Disk for Egress
               </Link>
-              <Button variant="outline" className="w-full justify-start">
-                <User className="mr-2 h-4 w-4" />
-                Manual Visitor Entry
-              </Button>
+              
+              <div className="mt-6 mb-2 font-medium text-sm text-gray-500">ANPR Scanning</div>
+              <Link 
+                to="/security/scan?type=anpr&direction=ingress"
+                className={cn(
+                  "flex w-full items-center justify-start",
+                  "bg-green-600 hover:bg-green-700 text-white", 
+                  "h-10 px-4 py-2 rounded-md text-sm font-medium"
+                )}
+              >
+                <Car className="mr-2 h-4 w-4" />
+                ANPR Camera Entry
+              </Link>
+              <Link
+                to="/security/scan?type=anpr&direction=egress"
+                className={cn(
+                  "flex w-full items-center justify-start",
+                  "bg-red-600 hover:bg-red-700 text-white", 
+                  "h-10 px-4 py-2 rounded-md text-sm font-medium"
+                )}
+              >
+                <Car className="mr-2 h-4 w-4" />
+                ANPR Camera Exit
+              </Link>
+              
+              <div className="mt-6">
+                <Button variant="outline" className="w-full justify-start">
+                  <User className="mr-2 h-4 w-4" />
+                  Manual Visitor Entry
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
