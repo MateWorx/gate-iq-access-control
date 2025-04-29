@@ -16,6 +16,7 @@ export const useScanningLogic = ({
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<null | { success: boolean; message: string; details?: any }>(null);
   const [geoLocation, setGeoLocation] = useState<GeolocationCoordinates | null>(null);
+  const [locationError, setLocationError] = useState<GeolocationPositionError | null>(null);
   const [direction, setDirection] = useState<'ingress' | 'egress'>(initialDirection);
   const [timestamp, setTimestamp] = useState<string>('');
   const { toast } = useToast();
@@ -23,19 +24,36 @@ export const useScanningLogic = ({
   // Get current officer location and timestamp when component loads
   useEffect(() => {
     if (navigator.geolocation) {
+      console.log("Requesting geolocation...");
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          console.log("Geolocation success:", position.coords);
           setGeoLocation(position.coords);
+          setLocationError(null);
         },
         (error) => {
-          console.error("Error getting location:", error);
+          console.error("Geolocation error:", error);
+          setLocationError(error);
+          setGeoLocation(null);
           toast({
             title: "Location Error",
-            description: "Unable to get your current location. Some features may be limited.",
+            description: `Unable to get your location: ${error.message}`,
             variant: "destructive"
           });
+        },
+        { 
+          enableHighAccuracy: true, 
+          timeout: 10000,
+          maximumAge: 0
         }
       );
+    } else {
+      console.error("Geolocation not supported by this browser");
+      toast({
+        title: "Location Error",
+        description: "Geolocation is not supported by this browser.",
+        variant: "destructive"
+      });
     }
     
     // Set current timestamp
@@ -220,6 +238,7 @@ export const useScanningLogic = ({
     setScanning,
     result,
     geoLocation,
+    locationError,
     direction,
     setDirection,
     timestamp,

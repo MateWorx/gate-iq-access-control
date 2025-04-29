@@ -1,14 +1,40 @@
 
 import React from 'react';
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface LocationDisplayProps {
   geoLocation: GeolocationCoordinates | null;
   timestamp: string;
+  error?: GeolocationPositionError | null;
 }
 
-const LocationDisplay: React.FC<LocationDisplayProps> = ({ geoLocation, timestamp }) => {
-  if (!geoLocation) return null;
+const LocationDisplay: React.FC<LocationDisplayProps> = ({ geoLocation, timestamp, error }) => {
+  // If there's a location error, display it
+  if (error) {
+    return (
+      <Alert variant="destructive" className="mt-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          {error.code === 1 && 'Location access denied. Please enable location permissions.'}
+          {error.code === 2 && 'Unable to determine your location. Please try again.'}
+          {error.code === 3 && 'Location request timed out. Please try again.'}
+          {!error.code && 'Location error: ' + error.message}
+        </AlertDescription>
+      </Alert>
+    );
+  }
   
+  // If no location data yet, show pending message
+  if (!geoLocation) {
+    return (
+      <div className="mt-4 text-xs text-gray-500">
+        <p>Obtaining location...</p>
+      </div>
+    );
+  }
+  
+  // Display location data
   return (
     <div className="mt-4 text-xs text-gray-500">
       <p>Location: {geoLocation.latitude.toFixed(6)}, {geoLocation.longitude.toFixed(6)} (±{geoLocation.accuracy.toFixed(0)}m)</p>

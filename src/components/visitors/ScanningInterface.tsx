@@ -22,6 +22,7 @@ const ScanningInterface: React.FC<ScanningInterfaceProps> = ({
     scanning,
     result,
     geoLocation,
+    locationError,
     direction,
     setDirection,
     timestamp,
@@ -62,7 +63,11 @@ const ScanningInterface: React.FC<ScanningInterfaceProps> = ({
           />
         )}
         
-        <LocationDisplay geoLocation={geoLocation} timestamp={timestamp} />
+        <LocationDisplay 
+          geoLocation={geoLocation} 
+          timestamp={timestamp}
+          error={locationError} 
+        />
       </CardContent>
     </Card>
   );
