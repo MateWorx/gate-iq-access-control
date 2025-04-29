@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { User, ClipboardList, Search, Shield } from 'lucide-react';
+import { User, ClipboardList, Search, Shield, LogIn, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import StatCard from './StatCard';
 import VisitorsList from './VisitorsList';
@@ -30,14 +30,14 @@ const SecurityDashboard: React.FC = () => {
           icon={<User className="h-5 w-5" />}
         />
         <StatCard 
-          title="Pending Arrivals" 
-          value="5" 
-          icon={<ClipboardList className="h-5 w-5" />}
+          title="Ingress Today" 
+          value="18" 
+          icon={<LogIn className="h-5 w-5" />}
         />
         <StatCard 
-          title="Scans Today" 
-          value="34" 
-          icon={<Search className="h-5 w-5" />}
+          title="Egress Today" 
+          value="6" 
+          icon={<LogOut className="h-5 w-5" />}
         />
         <StatCard 
           title="Incident Reports" 
@@ -65,34 +65,52 @@ const SecurityDashboard: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <Link 
-                to="/security/scan"
+                to="/security/scan?type=id&direction=ingress"
                 className={cn(
                   "flex w-full items-center justify-start",
-                  "bg-navy hover:bg-navy-light text-white", 
+                  "bg-green-600 hover:bg-green-700 text-white", 
                   "h-10 px-4 py-2 rounded-md text-sm font-medium"
                 )}
               >
-                <Search className="mr-2 h-4 w-4" />
-                Scan ID Document
+                <LogIn className="mr-2 h-4 w-4" />
+                Scan ID for Ingress (In)
               </Link>
               <Link
-                to="/security/scan?type=vehicle"
+                to="/security/scan?type=id&direction=egress"
                 className={cn(
                   "flex w-full items-center justify-start",
-                  "bg-navy hover:bg-navy-light text-white", 
+                  "bg-red-600 hover:bg-red-700 text-white", 
                   "h-10 px-4 py-2 rounded-md text-sm font-medium"
                 )}
               >
-                <Search className="mr-2 h-4 w-4" />
-                Scan Vehicle License Disk
+                <LogOut className="mr-2 h-4 w-4" />
+                Scan ID for Egress (Out)
+              </Link>
+              <Link 
+                to="/security/scan?type=vehicle&direction=ingress"
+                className={cn(
+                  "flex w-full items-center justify-start",
+                  "bg-green-600 hover:bg-green-700 text-white", 
+                  "h-10 px-4 py-2 rounded-md text-sm font-medium"
+                )}
+              >
+                <LogIn className="mr-2 h-4 w-4" />
+                Scan Vehicle for Ingress
+              </Link>
+              <Link
+                to="/security/scan?type=vehicle&direction=egress"
+                className={cn(
+                  "flex w-full items-center justify-start",
+                  "bg-red-600 hover:bg-red-700 text-white", 
+                  "h-10 px-4 py-2 rounded-md text-sm font-medium"
+                )}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Scan Vehicle for Egress
               </Link>
               <Button variant="outline" className="w-full justify-start">
                 <User className="mr-2 h-4 w-4" />
                 Manual Visitor Entry
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <ClipboardList className="mr-2 h-4 w-4" />
-                View Recent Check-ins
               </Button>
             </CardContent>
           </Card>
