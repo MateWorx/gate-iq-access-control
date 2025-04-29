@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BarcodeScanner from '@/components/scanning/BarcodeScanner';
 import { Button } from '@/components/ui/button';
 import { CardFooter } from '@/components/ui/card';
+import { Camera, Loader2 } from 'lucide-react';
 
 interface ScanningControlsProps {
   scanType: string;
@@ -57,7 +58,7 @@ const ScanningControls: React.FC<ScanningControlsProps> = ({
         </TabsContent>
       </Tabs>
       
-      <CardFooter className="flex justify-center">
+      <CardFooter className="flex justify-center mt-4">
         <Button 
           className={direction === 'ingress' 
             ? "bg-green-600 hover:bg-green-700 text-white w-full max-w-xs" 
@@ -65,7 +66,17 @@ const ScanningControls: React.FC<ScanningControlsProps> = ({
           onClick={onStartScan}
           disabled={scanning}
         >
-          {scanning ? 'Scanning...' : 'Start Scan'}
+          {scanning ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Scanning...
+            </>
+          ) : (
+            <>
+              <Camera className="mr-2 h-4 w-4" />
+              Start Scan
+            </>
+          )}
         </Button>
       </CardFooter>
     </>
