@@ -12,6 +12,9 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000
+    },
+    Camera: {
+      presentationStyle: 'fullscreen'
     }
   }
 };
