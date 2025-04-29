@@ -5,6 +5,7 @@ import StatCard from './StatCard';
 import VisitorsList from './VisitorsList';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 
 const SecurityDashboard: React.FC = () => {
   return (
@@ -62,11 +63,19 @@ const SecurityDashboard: React.FC = () => {
               <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button className="w-full bg-navy hover:bg-navy-light text-white justify-start">
+              <Button 
+                className="w-full bg-navy hover:bg-navy-light text-white justify-start"
+                as={Link}
+                to="/security/scan"
+              >
                 <Search className="mr-2 h-4 w-4" />
                 Scan ID Document
               </Button>
-              <Button className="w-full bg-navy hover:bg-navy-light text-white justify-start">
+              <Button 
+                className="w-full bg-navy hover:bg-navy-light text-white justify-start"
+                as={Link}
+                to="/security/scan?type=vehicle"
+              >
                 <Search className="mr-2 h-4 w-4" />
                 Scan Vehicle License Disk
               </Button>

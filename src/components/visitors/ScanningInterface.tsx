@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,8 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
-const ScanningInterface: React.FC = () => {
-  const [scanType, setScanType] = useState('id');
+const ScanningInterface: React.FC<{ initialScanType?: string }> = ({ initialScanType = 'id' }) => {
+  const [scanType, setScanType] = useState(initialScanType);
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<null | { success: boolean; message: string; details?: any }>(null);
   const [geoLocation, setGeoLocation] = useState<GeolocationCoordinates | null>(null);
