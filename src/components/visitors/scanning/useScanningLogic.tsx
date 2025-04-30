@@ -15,10 +15,12 @@ interface ScanResultData {
   details?: Record<string, any>; // Using Record instead of any for structured details
 }
 
+// Define the geo location structure to match Supabase Json type expectations
 interface GeoLocationData {
   latitude: number;
   longitude: number;
   accuracy: number;
+  [key: string]: any; // Add index signature to make it compatible with Json type
 }
 
 export const useScanningLogic = ({ 
@@ -114,8 +116,8 @@ export const useScanningLogic = ({
           throw new Error(`Database error: ${visitorError.message}`);
         }
         
-        // Define the geo location data to store
-        const geoLocationData: GeoLocationData | null = geoLocation ? {
+        // Define the geo location data to store - as a proper JSON object
+        const geoLocationData = geoLocation ? {
           latitude: geoLocation.latitude, 
           longitude: geoLocation.longitude,
           accuracy: geoLocation.accuracy
@@ -128,8 +130,8 @@ export const useScanningLogic = ({
             security_officer_id: securityOfficerId,
             scanned_id: scannedId,
             scan_type: 'ID Scan',
-            scan_result: scanResult,
-            geo_location: geoLocationData,
+            scan_result: scanResult as any,  // Cast to any to satisfy TypeScript
+            geo_location: geoLocationData as any, // Cast to any to satisfy TypeScript
             timestamp: timestamp,
             direction: direction,
             visitor_id: visitorData?.id || null
@@ -201,7 +203,7 @@ export const useScanningLogic = ({
         };
         
         // Define the geo location data to store
-        const geoLocationData: GeoLocationData | null = geoLocation ? {
+        const geoLocationData = geoLocation ? {
           latitude: geoLocation.latitude, 
           longitude: geoLocation.longitude,
           accuracy: geoLocation.accuracy
@@ -214,8 +216,8 @@ export const useScanningLogic = ({
             security_officer_id: securityOfficerId,
             scanned_id: scannedId,
             scan_type: 'ANPR Scan',
-            scan_result: scanResult,
-            geo_location: geoLocationData,
+            scan_result: scanResult as any,  // Cast to any to satisfy TypeScript
+            geo_location: geoLocationData as any, // Cast to any to satisfy TypeScript
             timestamp: timestamp,
             direction: direction,
             visitor_id: visitorMatch?.id || null
@@ -258,7 +260,7 @@ export const useScanningLogic = ({
         };
         
         // Define the geo location data to store
-        const geoLocationData: GeoLocationData | null = geoLocation ? {
+        const geoLocationData = geoLocation ? {
           latitude: geoLocation.latitude, 
           longitude: geoLocation.longitude,
           accuracy: geoLocation.accuracy
@@ -271,8 +273,8 @@ export const useScanningLogic = ({
             security_officer_id: securityOfficerId,
             scanned_id: scannedId,
             scan_type: 'Disk Scan',
-            scan_result: scanResult,
-            geo_location: geoLocationData,
+            scan_result: scanResult as any,  // Cast to any to satisfy TypeScript
+            geo_location: geoLocationData as any, // Cast to any to satisfy TypeScript
             timestamp: timestamp,
             direction: direction
           });
