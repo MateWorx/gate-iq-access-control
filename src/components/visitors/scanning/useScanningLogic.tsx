@@ -8,13 +8,26 @@ interface ScanLogicProps {
   initialDirection: 'ingress' | 'egress';
 }
 
+// Define explicit types for scan results to avoid excessive type instantiation
+interface ScanResultData {
+  success: boolean;
+  message: string;
+  details?: Record<string, any>; // Using Record instead of any for structured details
+}
+
+interface GeoLocationData {
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+}
+
 export const useScanningLogic = ({ 
   initialScanType, 
   initialDirection 
 }: ScanLogicProps) => {
   const [scanType, setScanType] = useState(initialScanType);
   const [scanning, setScanning] = useState(false);
-  const [result, setResult] = useState<null | { success: boolean; message: string; details?: any }>(null);
+  const [result, setResult] = useState<ScanResultData | null>(null);
   const [geoLocation, setGeoLocation] = useState<GeolocationCoordinates | null>(null);
   const [locationError, setLocationError] = useState<GeolocationPositionError | null>(null);
   const [direction, setDirection] = useState<'ingress' | 'egress'>(initialDirection);
@@ -74,7 +87,8 @@ export const useScanningLogic = ({
       const securityOfficerId = "simulated-officer-id";
       
       // Parse the scanned data based on scan type
-      let scannedId, scanResult;
+      let scannedId: string;
+      let scanResult: Record<string, any>;
       
       if (scanType === 'id') {
         // In a real app, we'd parse the actual ID barcode data
@@ -100,6 +114,13 @@ export const useScanningLogic = ({
           throw new Error(`Database error: ${visitorError.message}`);
         }
         
+        // Define the geo location data to store
+        const geoLocationData = geoLocation ? {
+          latitude: geoLocation.latitude, 
+          longitude: geoLocation.longitude,
+          accuracy: geoLocation.accuracy
+        } : null;
+        
         // Store the scan log with direction and timestamp
         const { error: logError } = await supabase
           .from('scan_logs')
@@ -108,11 +129,7 @@ export const useScanningLogic = ({
             scanned_id: scannedId,
             scan_type: 'ID Scan',
             scan_result: scanResult,
-            geo_location: geoLocation ? {
-              latitude: geoLocation.latitude, 
-              longitude: geoLocation.longitude,
-              accuracy: geoLocation.accuracy
-            } : null,
+            geo_location: geoLocationData,
             timestamp: timestamp,
             direction: direction,
             visitor_id: visitorData?.id || null
@@ -183,6 +200,13 @@ export const useScanningLogic = ({
           owner: residentMatch ? residentMatch.full_name : visitorMatch ? visitorMatch.full_name : undefined
         };
         
+        // Define the geo location data to store
+        const geoLocationData = geoLocation ? {
+          latitude: geoLocation.latitude, 
+          longitude: geoLocation.longitude,
+          accuracy: geoLocation.accuracy
+        } : null;
+        
         // Log the scan
         const { error: logError } = await supabase
           .from('scan_logs')
@@ -191,11 +215,7 @@ export const useScanningLogic = ({
             scanned_id: scannedId,
             scan_type: 'ANPR Scan',
             scan_result: scanResult,
-            geo_location: geoLocation ? {
-              latitude: geoLocation.latitude, 
-              longitude: geoLocation.longitude,
-              accuracy: geoLocation.accuracy
-            } : null,
+            geo_location: geoLocationData,
             timestamp: timestamp,
             direction: direction,
             visitor_id: visitorMatch?.id || null
@@ -216,13 +236,13 @@ export const useScanningLogic = ({
         }
         
         setResult({
-          success: true,
-          message: resultMessage,
-          details: {
-            ...scanResult,
-            direction: direction,
-            timestamp: new Date(timestamp).toLocaleString()
-          }
+            success: true,
+            message: resultMessage,
+            details: {
+              ...scanResult,
+              direction: direction,
+              timestamp: new Date(timestamp).toLocaleString()
+            }
         });
         
       } else {
@@ -237,6 +257,13 @@ export const useScanningLogic = ({
           expiryDate: "2025-12-31"
         };
         
+        // Define the geo location data to store
+        const geoLocationData = geoLocation ? {
+          latitude: geoLocation.latitude, 
+          longitude: geoLocation.longitude,
+          accuracy: geoLocation.accuracy
+        } : null;
+        
         // Store the scan log with direction and timestamp
         const { error: logError } = await supabase
           .from('scan_logs')
@@ -245,11 +272,7 @@ export const useScanningLogic = ({
             scanned_id: scannedId,
             scan_type: 'Disk Scan',
             scan_result: scanResult,
-            geo_location: geoLocation ? {
-              latitude: geoLocation.latitude, 
-              longitude: geoLocation.longitude,
-              accuracy: geoLocation.accuracy
-            } : null,
+            geo_location: geoLocationData,
             timestamp: timestamp,
             direction: direction
           });
