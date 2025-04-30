@@ -115,7 +115,7 @@ export const useScanningLogic = ({
         }
         
         // Define the geo location data to store
-        const geoLocationData = geoLocation ? {
+        const geoLocationData: GeoLocationData | null = geoLocation ? {
           latitude: geoLocation.latitude, 
           longitude: geoLocation.longitude,
           accuracy: geoLocation.accuracy
@@ -201,7 +201,7 @@ export const useScanningLogic = ({
         };
         
         // Define the geo location data to store
-        const geoLocationData = geoLocation ? {
+        const geoLocationData: GeoLocationData | null = geoLocation ? {
           latitude: geoLocation.latitude, 
           longitude: geoLocation.longitude,
           accuracy: geoLocation.accuracy
@@ -258,7 +258,7 @@ export const useScanningLogic = ({
         };
         
         // Define the geo location data to store
-        const geoLocationData = geoLocation ? {
+        const geoLocationData: GeoLocationData | null = geoLocation ? {
           latitude: geoLocation.latitude, 
           longitude: geoLocation.longitude,
           accuracy: geoLocation.accuracy
