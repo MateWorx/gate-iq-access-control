@@ -2,25 +2,26 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { ScanDirection } from '@/components/visitors/types';
 
 interface ScanLogicProps {
   initialScanType: string;
-  initialDirection: 'ingress' | 'egress';
+  initialDirection: ScanDirection;
 }
 
-// Define explicit types for scan results to avoid excessive type instantiation
+// Define simple non-recursive types to avoid excessive depth
 interface ScanResultData {
   success: boolean;
   message: string;
-  details?: Record<string, any>; // Using Record instead of any for structured details
+  details?: Record<string, unknown>; // Using Record<string, unknown> instead of any
 }
 
-// Define the geo location structure to match Supabase Json type expectations
+// Define the geo location structure with explicit fields
 interface GeoLocationData {
   latitude: number;
   longitude: number;
   accuracy: number;
-  [key: string]: any; // Add index signature to make it compatible with Json type
+  // Avoid index signature for better type safety
 }
 
 export const useScanningLogic = ({ 
@@ -32,7 +33,7 @@ export const useScanningLogic = ({
   const [result, setResult] = useState<ScanResultData | null>(null);
   const [geoLocation, setGeoLocation] = useState<GeolocationCoordinates | null>(null);
   const [locationError, setLocationError] = useState<GeolocationPositionError | null>(null);
-  const [direction, setDirection] = useState<'ingress' | 'egress'>(initialDirection);
+  const [direction, setDirection] = useState<ScanDirection>(initialDirection);
   const [timestamp, setTimestamp] = useState<string>('');
   const { toast } = useToast();
   
@@ -90,7 +91,7 @@ export const useScanningLogic = ({
       
       // Parse the scanned data based on scan type
       let scannedId: string;
-      let scanResult: Record<string, any>;
+      let scanResult: Record<string, unknown>; // Using Record<string, unknown> to avoid recursive types
       
       if (scanType === 'id') {
         // In a real app, we'd parse the actual ID barcode data
@@ -116,8 +117,8 @@ export const useScanningLogic = ({
           throw new Error(`Database error: ${visitorError.message}`);
         }
         
-        // Define the geo location data to store - as a proper JSON object
-        const geoLocationData = geoLocation ? {
+        // Define the geo location data to store - with explicit type casting
+        const geoLocationData: GeoLocationData | null = geoLocation ? {
           latitude: geoLocation.latitude, 
           longitude: geoLocation.longitude,
           accuracy: geoLocation.accuracy
@@ -130,8 +131,8 @@ export const useScanningLogic = ({
             security_officer_id: securityOfficerId,
             scanned_id: scannedId,
             scan_type: 'ID Scan',
-            scan_result: scanResult as any,  // Cast to any to satisfy TypeScript
-            geo_location: geoLocationData as any, // Cast to any to satisfy TypeScript
+            scan_result: scanResult,
+            geo_location: geoLocationData,
             timestamp: timestamp,
             direction: direction,
             visitor_id: visitorData?.id || null
@@ -196,14 +197,14 @@ export const useScanningLogic = ({
         // Create result with match status
         scanResult = {
           plate: scannedId,
-          confidence: rawResult?.confidence || 0.98,
-          region: rawResult?.region || "GP",
+          confidence: (rawResult?.confidence || 0.98) as number,
+          region: (rawResult?.region || "GP") as string,
           matchStatus: residentMatch ? "Matched as Resident" : visitorMatch ? "Matched as Visitor" : "Unregistered",
           owner: residentMatch ? residentMatch.full_name : visitorMatch ? visitorMatch.full_name : undefined
         };
         
-        // Define the geo location data to store
-        const geoLocationData = geoLocation ? {
+        // Define the geo location data to store with explicit typing
+        const geoLocationData: GeoLocationData | null = geoLocation ? {
           latitude: geoLocation.latitude, 
           longitude: geoLocation.longitude,
           accuracy: geoLocation.accuracy
@@ -216,8 +217,8 @@ export const useScanningLogic = ({
             security_officer_id: securityOfficerId,
             scanned_id: scannedId,
             scan_type: 'ANPR Scan',
-            scan_result: scanResult as any,  // Cast to any to satisfy TypeScript
-            geo_location: geoLocationData as any, // Cast to any to satisfy TypeScript
+            scan_result: scanResult,
+            geo_location: geoLocationData,
             timestamp: timestamp,
             direction: direction,
             visitor_id: visitorMatch?.id || null
@@ -238,13 +239,13 @@ export const useScanningLogic = ({
         }
         
         setResult({
-            success: true,
-            message: resultMessage,
-            details: {
-              ...scanResult,
-              direction: direction,
-              timestamp: new Date(timestamp).toLocaleString()
-            }
+          success: true,
+          message: resultMessage,
+          details: {
+            ...scanResult,
+            direction: direction,
+            timestamp: new Date(timestamp).toLocaleString()
+          }
         });
         
       } else {
@@ -259,8 +260,8 @@ export const useScanningLogic = ({
           expiryDate: "2025-12-31"
         };
         
-        // Define the geo location data to store
-        const geoLocationData = geoLocation ? {
+        // Define the geo location data to store with explicit typing
+        const geoLocationData: GeoLocationData | null = geoLocation ? {
           latitude: geoLocation.latitude, 
           longitude: geoLocation.longitude,
           accuracy: geoLocation.accuracy
@@ -273,8 +274,8 @@ export const useScanningLogic = ({
             security_officer_id: securityOfficerId,
             scanned_id: scannedId,
             scan_type: 'Disk Scan',
-            scan_result: scanResult as any,  // Cast to any to satisfy TypeScript
-            geo_location: geoLocationData as any, // Cast to any to satisfy TypeScript
+            scan_result: scanResult,
+            geo_location: geoLocationData,
             timestamp: timestamp,
             direction: direction
           });
