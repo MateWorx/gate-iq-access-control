@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Home, User, Users, ClipboardList, Shield, LogIn } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Home, User, Users, ClipboardList, Shield, LogIn, ChevronLeft, ChevronRight } from 'lucide-react';
 import Logo from './Logo';
 
 // User type constants
@@ -18,6 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   userType = USER_TYPE.RESIDENT
 }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
   
   const residentNavItems = [
     { name: 'Dashboard', path: '/dashboard', icon: Home },
@@ -52,48 +54,62 @@ const Sidebar: React.FC<SidebarProps> = ({
       navItems = residentNavItems;
   }
   
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+  
   return (
-    <div className={`${collapsed ? 'w-16' : 'w-64'} h-screen bg-sidebar fixed left-0 top-0 transition-all duration-300 flex flex-col z-10`}>
-      <div className="p-4 flex justify-between items-center">
+    <div 
+      className={`${collapsed ? 'w-16' : 'w-64'} h-screen bg-white border-r border-gray-200 fixed left-0 top-0 transition-all duration-300 flex flex-col z-10`}
+    >
+      <div className="p-4 flex justify-between items-center border-b border-gray-100">
         {!collapsed && <Logo withName={true} />}
         {collapsed && <Logo withName={false} size="sm" />}
         
         <button 
           onClick={() => setCollapsed(!collapsed)}
-          className="h-6 w-6 flex items-center justify-center rounded-full bg-sidebar-accent text-white"
+          className="h-6 w-6 flex items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
         >
-          {collapsed ? '→' : '←'}
+          {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
       </div>
       
-      <nav className="flex-1 mt-6">
+      <nav className="flex-1 mt-4 px-2">
         <ul className="space-y-1">
-          {navItems.map((item) => (
-            <li key={item.path}>
-              <Link 
-                to={item.path}
-                className="flex items-center px-4 py-3 text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
-              >
-                <item.icon className="h-5 w-5" />
-                {!collapsed && <span className="ml-3">{item.name}</span>}
-              </Link>
-            </li>
-          ))}
+          {navItems.map((item) => {
+            const active = isActive(item.path);
+            
+            return (
+              <li key={item.path}>
+                <Link 
+                  to={item.path}
+                  className={`flex items-center ${collapsed ? 'justify-center' : ''} px-3 py-2.5 rounded-md text-sm transition-colors
+                    ${active 
+                      ? 'bg-navy/5 text-navy font-medium' 
+                      : 'text-gray-600 hover:bg-gray-100'}`
+                  }
+                >
+                  <item.icon className={`${collapsed ? 'h-5 w-5' : 'h-4 w-4 mr-3'}`} />
+                  {!collapsed && <span>{item.name}</span>}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
       
-      <div className="p-4 border-t border-sidebar-border">
+      <div className="p-3 border-t border-gray-100">
         <Link 
           to="/profile" 
-          className="flex items-center text-sidebar-foreground hover:bg-sidebar-accent p-2 rounded-md transition-colors"
+          className="flex items-center text-gray-700 hover:bg-gray-100 p-2 rounded-md transition-colors"
         >
-          <div className="h-8 w-8 rounded-full bg-sidebar-accent-foreground flex items-center justify-center text-sidebar-accent">
+          <div className="h-8 w-8 rounded-md bg-navy flex items-center justify-center text-white">
             {userType.charAt(0).toUpperCase()}
           </div>
           {!collapsed && (
             <div className="ml-3">
               <div className="text-sm font-medium">User Name</div>
-              <div className="text-xs opacity-70 capitalize">{userType}</div>
+              <div className="text-xs text-gray-500 capitalize">{userType}</div>
             </div>
           )}
         </Link>

@@ -15,12 +15,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   pageTitle = 'Dashboard'
 }) => {
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-[#FBFBFA] flex">
       <Sidebar userType={userType} />
       
       <div className="flex-1 ml-64">
         <TopBar title={pageTitle} />
-        <main className="p-6">
+        <main className="p-6 max-w-5xl mx-auto w-full">
           {children}
         </main>
       </div>
