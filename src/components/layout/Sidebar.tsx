@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Home, User, Users, ClipboardList, Shield, Search } from 'lucide-react';
+import { Home, User, Users, ClipboardList, Shield, LogIn } from 'lucide-react';
 import Logo from './Logo';
 
 // User type constants
@@ -29,8 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   
   const securityNavItems = [
     { name: 'Dashboard', path: '/security', icon: Home },
-    { name: 'Check-In', path: '/security/check-in', icon: User },
-    { name: 'Scan ID/Disk', path: '/security/scan', icon: Search },
+    { name: 'Visitor Access', path: '/security/access', icon: LogIn },
     { name: 'Incident Report', path: '/security/incident', icon: ClipboardList },
   ];
   

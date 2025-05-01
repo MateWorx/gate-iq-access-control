@@ -30,7 +30,7 @@ const App = () => (
           
           {/* Security Routes */}
           <Route path="/security" element={<SecurityDashboardPage />} />
-          <Route path="/security/scan" element={<ScanningPage />} />
+          <Route path="/security/access" element={<ScanningPage />} />
           
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
