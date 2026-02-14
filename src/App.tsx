@@ -10,6 +10,7 @@ import ResidentDashboardPage from "./pages/ResidentDashboardPage";
 import SecurityDashboardPage from "./pages/SecurityDashboardPage";
 import VisitorRegistrationPage from "./pages/VisitorRegistrationPage";
 import ScanningPage from "./pages/ScanningPage";
+import OnboardingPage from "./pages/OnboardingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,7 +32,10 @@ const App = () => (
           {/* Security Routes */}
           <Route path="/security" element={<SecurityDashboardPage />} />
           <Route path="/security/access" element={<ScanningPage />} />
-          
+
+          {/* Onboarding Routes */}
+          <Route path="/onboarding" element={<OnboardingPage />} />
+
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
