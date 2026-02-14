@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, User, Users, ClipboardList, Shield, LogIn, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, User, Users, ClipboardList, Shield, LogIn, ChevronLeft, ChevronRight, UserPlus, FileText } from 'lucide-react';
 import Logo from './Logo';
 
 // User type constants
@@ -36,6 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   
   const adminNavItems = [
     { name: 'Dashboard', path: '/admin', icon: Home },
+    { name: 'Client Onboarding', path: '/onboarding', icon: UserPlus },
     { name: 'Residents', path: '/admin/residents', icon: User },
     { name: 'Security Staff', path: '/admin/security', icon: Shield },
     { name: 'Visitors', path: '/admin/visitors', icon: Users },
@@ -55,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   }
   
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return location.pathname === path || location.pathname.startsWith(path + '/');
   };
   
   return (
